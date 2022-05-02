@@ -24,18 +24,14 @@ function ipynb_to_colab(notebook_name::String)
 
     # Reading the configuration notebook
     colab_json = parse_json(String(HTTP.get("https://raw.githubusercontent.com/Chandu-4444/Colab.jl/main/src/assets/Config_Notebook.json").body))
-
     # Updataing metadata
     normal_json["metadata"] = colab_json["metadata"]
-
     # Adding the configuration cell at the top
     pushfirst!(normal_json["cells"], colab_json["cells"][1])
-
-    output_filename = string(string(split(input_filename, ".")[1]), "_colab", ".ipynb") # input_filename_colab.ipynb
+    # output filename would be input_filename + "_colab.ipynb"
+    output_filename = string(string(split(input_filename, ".")[1]), "_colab", ".ipynb")
 
     write_data(output_filename, normal_json)
-
-
 end
 
 export ipynb_to_colab

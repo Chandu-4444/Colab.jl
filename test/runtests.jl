@@ -1,6 +1,7 @@
 using Colab
 using Test
+using HTTP
 
 @testset "Colab.jl" begin
-    # Write your tests here.
+    @test HTTP.get("https://raw.githubusercontent.com/Chandu-4444/Colab.jl/main/src/assets/Config_Notebook.json").status == 200
 end

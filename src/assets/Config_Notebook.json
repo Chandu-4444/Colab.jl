@@ -1,0 +1,116 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Copy of FastAI.jl.ipynb",
+      "provenance": [],
+      "collapsed_sections": []
+    },
+    "kernelspec": {
+      "name": "julia",
+      "display_name": "Julia"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "bqp7S32ULebR",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "a8dd1cc4-9f29-46cd-c880-b12cb93c5a50"
+      },
+      "source": [
+        "%%shell\n",
+        "set -e\n",
+        "\n",
+        "#---------------------------------------------------#\n",
+        "JULIA_VERSION=\"1.6.2\"\n",
+        "export JULIA_PACKAGES=\"CUDA IJulia CairoMakie\"\n",
+        "JULIA_NUM_THREADS=\"2\"\n",
+        "#---------------------------------------------------#\n",
+        "\n",
+        "if [ -n \"$COLAB_GPU\" ] && [ -z `which julia` ]; then\n",
+        "  # Install Julia\n",
+        "  JULIA_VER=`cut -d '.' -f -2 <<< \"$JULIA_VERSION\"`\n",
+        "  echo \"Installing Julia $JULIA_VERSION on the current Colab Runtime...\"\n",
+        "  BASE_URL=\"https://julialang-s3.julialang.org/bin/linux/x64\"\n",
+        "  URL=\"$BASE_URL/$JULIA_VER/julia-$JULIA_VERSION-linux-x86_64.tar.gz\"\n",
+        "  wget -nv $URL -O /tmp/julia.tar.gz # -nv means \"not verbose\"\n",
+        "  tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1\n",
+        "  rm /tmp/julia.tar.gz\n",
+        "\n",
+        "  # Install Packages\n",
+        "  echo \"Installing Julia packages, this may take up to 15 minutes. \"\n",
+        "  julia -e 'using Pkg; Pkg.add([\"CUDA\", \"IJulia\", \"CairoMakie\"]); Pkg.add(Pkg.PackageSpec(url=\"https://github.com/FluxML/FastAI.jl\")); Pkg.precompile()' &> /dev/null\n",
+        "\n",
+        "  # Install kernel and rename it to \"julia\"\n",
+        "  echo \"Installing IJulia kernel...\"\n",
+        "  julia -e 'using IJulia; IJulia.installkernel(\"julia\", env=Dict(\n",
+        "      \"JULIA_NUM_THREADS\"=>\"'\"$JULIA_NUM_THREADS\"'\"))'\n",
+        "  KERNEL_DIR=`julia -e \"using IJulia; print(IJulia.kerneldir())\"`\n",
+        "  KERNEL_NAME=`ls -d \"$KERNEL_DIR\"/julia*`\n",
+        "  mv -f $KERNEL_NAME \"$KERNEL_DIR\"/julia  \n",
+        "\n",
+        "  echo ''\n",
+        "  echo \"Success! Please reload this page and jump to the next section.\"\n",
+        "fi"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Installing Julia 1.6.2 on the current Colab Runtime...\n",
+            "2021-11-29 14:54:50 URL:https://storage.googleapis.com/julialang2/bin/linux/x64/1.6/julia-1.6.2-linux-x86_64.tar.gz [112946671/112946671] -> \"/tmp/julia.tar.gz\" [1]\n",
+            "Installing Julia packages, this may take up to 15 minutes. \n",
+            "Installing IJulia kernel...\n",
+            "\u001b[36m\u001b[1m[ \u001b[22m\u001b[39m\u001b[36m\u001b[1mInfo: \u001b[22m\u001b[39mInstalling julia kernelspec in /root/.local/share/jupyter/kernels/julia-1.6\n",
+            "\n",
+            "Success! Please reload this page and jump to the next section.\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [""]
+          },
+          "metadata": {},
+          "execution_count": 1
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "IlxWAJbuPKZB"
+      },
+      "source": ["import Pkg"],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3EnTiScIPL56",
+        "outputId": "9041154f-1092-4cd7-d044-8780753cb3a7"
+      },
+      "source": ["printstyled(\"Hello\", color=:blue, bold=true)"],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": ["\u001b[34m\u001b[1mHello\u001b[22m\u001b[39m"]
+        }
+      ]
+    }
+  ]
+}
